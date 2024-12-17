@@ -19,7 +19,7 @@ class RecipeController extends AbstractController
     {
         //dd($request->attributes->get('slug'), $request->attributes->get('id'));
         //return new Response('Recipes');
-        $recipes = $repository->findWithDurationLowerThan(20);
+        $recipes = $repository->findAll();
         //$recipes = $em->getRepository(Recipe::class)->findWithDurationLowerThan(20);
 
         // Update recipe
@@ -68,12 +68,42 @@ class RecipeController extends AbstractController
         ]);
     }
 
-    #[Route('/recipes/{id}/edit', name:'recipe.edit', requirements: ['id' => '\d+'])]
-    public function edit(Recipe $recipe, Request $request){
+    #[Route('/recipes/{id}/edit', name:'recipe.edit', requirements: ['id' => '\d+'], methods: ['GET','POST'])]
+    public function edit(Recipe $recipe, Request $request, EntityManagerInterface $em){
         $form = $this->createForm(RecipeType::class, $recipe);
+        $form->handleRequest($request);
+        if( $form->isSubmitted() && $form->isValid() ){
+            $em->flush();
+            $this->addFlash('success','Modif success.');
+            return $this->redirectToRoute('recipe.index');
+        }
         return $this->render('recipe/edit.html.twig', [
             'recipe'=> $recipe,
             'form'=> $form
         ]);
+    }
+
+    #[Route('recipe/create', name:'recipe.create')]
+    public function createRecipe(Request $request, EntityManagerInterface $em){
+        $recipe = new Recipe();
+        $form = $this->createForm(RecipeType::class, $recipe);
+        $form->handleRequest($request);
+        if( $form->isSubmitted() && $form->isValid() ){
+            $em->persist($recipe);
+            $em->flush();
+            $this->addFlash('success','Creation success.');
+            return $this->redirectToRoute('recipe.index');
+        }
+        return $this->render('recipe/create.html.twig', [
+            'form'=> $form
+        ]);
+    }
+
+    #[Route('recipes/{id}/delete', name:'recipe.delete', requirements: ['id' => '\d+'], methods: ['DELETE'])]
+    public function deleteRecipe(Recipe $recipe, EntityManagerInterface $em){
+        $em->remove($recipe);
+        $em->flush();
+        $this->addFlash('success','Delete success.');
+        return $this->redirectToRoute('recipe.index');
     }
 }

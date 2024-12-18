@@ -42,7 +42,7 @@ class Users
     #[Assert\NotBlank]
     #[Assert\NotNull]
     #[Assert\Length(min:5)]
-    #[Assert\Regex('/[^@ \t\r\n]+@[^@ \t\r\n]+\.[^@ \t\r\n]+/')]
+    #[Assert\Email]
     private string $email = '';
 
     public function getId(): ?int

@@ -5,6 +5,12 @@
 {% block body %}
     <h1>{{ recipe.title }}</h1>
 
+    {% if recipe.thumbnail is not null %}
+    <p class="w-25">
+        <img class="img-thumbnail" src="/images/recipes/{{recipe.thumbnail}}" alt="img">
+    </p>
+    {% endif %}
+
     {{ form(form) }}
     
 {% endblock %}

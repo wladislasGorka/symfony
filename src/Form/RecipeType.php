@@ -11,9 +11,11 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\String\Slugger\AsciiSlugger;
+use Symfony\Component\Validator\Constraints\Image;
 use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Validator\Constraints\Sequentially;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -37,6 +39,7 @@ class RecipeType extends AbstractType
                     new Regex('/^[a-z0-9]+(?:-[a-z0-9]+)*$/')
                 ])
             ])
+            ->add('thumbnailFile', FileType::class)
             ->add('category', EntityType::class, [
                 'class'=> Category::class,
                 'choice_label'=> 'name'

@@ -20,6 +20,11 @@ class RecipeController extends AbstractController
     #[Route('/', name: 'index')]
     public function index(RecipeRepository $recipeRepository, CategoryRepository $categoryRepository): Response
     {
+        return $this->render('admin/recipe/index.html.twig', [
+            'categories'=> $categoryRepository->findAll(),
+            'recipes' => $recipeRepository->findAll()
+        ]);
+
         //dd($request->attributes->get('slug'), $request->attributes->get('id'));
         //return new Response('Recipes');
         //$recipes = $repository->findAll();
@@ -44,11 +49,6 @@ class RecipeController extends AbstractController
         // $em->remove($recipes[0]);
         // $em->flush();
         // $recipes = $repository->findWithDurationLowerThan(20);
-
-        return $this->render('admin/recipe/index.html.twig', [
-            'categories'=> $categoryRepository->findAll(),
-            'recipes' => $recipeRepository->findAll()
-        ]);
     }
 
     // #[Route('/recipes/{slug}-{id}', name: 'recipe.show', requirements: ['id' => '\d+', 'slug' => '[a-z0-9-]+'])]
@@ -121,10 +121,11 @@ class RecipeController extends AbstractController
     #[Route('/{slug}', name: 'filtered', requirements: ['slug' => '[a-z0-9-]+'])]
     public function sort(string $slug, Request $request, RecipeRepository $recipeRepository, CategoryRepository $categoryRepository): Response
     {
+        $category = $categoryRepository->findOneBy(['slug'=> $slug]);
         if($slug == 'all') {
             $recipes = $recipeRepository->findAll();
         }else{
-            $recipes = $recipeRepository->findByCategory($slug);
+            $recipes = $category->getRecipes();
         }
         return $this->render('admin/recipe/index.html.twig', [
             'categories'=> $categoryRepository->findAll(),

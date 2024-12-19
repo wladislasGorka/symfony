@@ -45,9 +45,8 @@ class Recipe
     #[Assert\LessThan(value: 1440)]
     private ?int $duration = null;
 
-    #[ORM\Column(length: 255)]
-    #[Assert\NotBlank]
-    private string $categorySlug = '';
+    #[ORM\ManyToOne(inversedBy: 'recipes')]
+    private ?Category $category = null;
 
     public function getId(): ?int
     {
@@ -126,14 +125,14 @@ class Recipe
         return $this;
     }
 
-    public function getCategorySlug(): string
+    public function getCategory(): ?Category
     {
-        return $this->categorySlug;
+        return $this->category;
     }
 
-    public function setCategorySlug(string $categorySlug): static
+    public function setCategory(?Category $category): static
     {
-        $this->categorySlug = $categorySlug;
+        $this->category = $category;
 
         return $this;
     }

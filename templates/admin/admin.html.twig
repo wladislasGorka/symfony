@@ -22,8 +22,8 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <div class="navbar-nav">
-                <a class="nav-link" href="{{ path('admin.recipe.index') }}">Recipes</a>
-                <a class="nav-link" href="{{ path('admin.category.index') }}">Categories</a>
+                <a class="nav-link {{ app.current_route starts with 'admin.recipe.' ? 'active' : '' }} " href="{{ path('admin.recipe.index') }}">Recipes</a>
+                <a class="nav-link {{ app.current_route starts with 'admin.category.' ? 'active' : '' }} " href="{{ path('admin.category.index') }}">Categories</a>
             </div>
         </div>
     </div>

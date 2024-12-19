@@ -3,21 +3,25 @@
 namespace App\Form;
 
 use App\Entity\Recipe;
+use FormListenerFactory;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Form\FormEvents;
-use Symfony\Component\Form\FormEvent;
 use Symfony\Component\String\Slugger\AsciiSlugger;
-use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\Regex;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Validator\Constraints\Sequentially;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
 class RecipeType extends AbstractType
 {
+    public function __construct(private FormListenerFactory $factory){
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -38,31 +42,9 @@ class RecipeType extends AbstractType
             ->add('save', SubmitType::class, [
                 'label'=> 'Send'
             ])
-            ->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'autoSlug'])
-            ->addEventListener(FormEvents::POST_SUBMIT, [$this, 'attachTimestamps'])
+            ->addEventListener(FormEvents::PRE_SUBMIT, $this->factory->autoSlug('title'))
+            ->addEventListener(FormEvents::POST_SUBMIT, $this->factory->timeStamps())
             ;
-    }
-
-    public function autoSlug(FormEvent $event): void
-    {
-        $data = $event->getData();
-        if(empty($data['slug'])){
-            $slugger = new AsciiSlugger();
-            $data['slug'] = strtolower($slugger->slug($data['title']));
-            $event->setData($data);
-        }
-    }
-
-    public function attachTimestamps(FormEvent $event): void
-    {
-        $data = $event->getData();
-        if(!($data instanceof Recipe)){
-            return;
-        }
-        $data->setUpdateAt(new \DateTimeImmutable());
-        if(!$data->getId()){
-            $data->setCreatedAt(new \DateTimeImmutable());
-        }
     }
 
     public function configureOptions(OptionsResolver $resolver): void

@@ -22,10 +22,9 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <div class="navbar-nav">
-                <a class="nav-link" href="{{ path('home') }}">Home</a>
-                <a class="nav-link" href="{{ path('admin.recipe.index') }}">Recipes</a>
-                <a class="nav-link" href="{{ path('contact.index') }}">Contact</a>
-                <a class="nav-link" href="{{ path('register.index') }}">Register</a>
+                <a class="nav-link {{ app.current_route == 'home' ? 'active' : '' }} " href="{{ path('home') }}">Home</a>
+                <a class="nav-link {{ app.current_route starts with 'contact.' ? 'active' : '' }} " href="{{ path('contact.index') }}">Contact</a>
+                <a class="nav-link {{ app.current_route starts with 'register.' ? 'active' : '' }} " href="{{ path('register.index') }}">Register</a>
             </div>
         </div>
     </div>

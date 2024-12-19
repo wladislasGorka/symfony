@@ -3,19 +3,9 @@
 {% block title "Category" %}
 
 {% block body %}
-    <h1>By category</h1>
+    <a class="btn btn-primary" href='{{ path('admin.category.create')}}'>Create category</a>
 
-    <form method="post" name="selectCategory" action="{{ path('admin.category.filter') }}">
-        <label for="category">Choose a category: </label>
-        <select name="category" id="category">
-            {% for category in categories %}
-            <option value={{ category.slug }} {% if slug is defined and slug == category.slug %}selected{% endif %}>{{ category.name }}</option>
-            {% endfor %}
-        </select>
-        <button class="btn btn-primary" type="submit" value="send">Send</button> 
-    </form>
-
-    {% if recipes is defined %}
+    {% if categories is defined %}
     <table class="table">
         <thead>
         <tr>
@@ -24,13 +14,13 @@
         </tr>
         </thead>
         <tbody>
-        {% for recipe in recipes %}
+        {% for category in categories %}
         <tr>
-            <td><a href='{{ path('admin.recipe.edit', {id: recipe.id, slug: recipe.slug}) }}'>{{recipe.title}}</a></td>
+            <td><a href='{{ path('admin.category.edit', {id: category.id, slug: category.slug}) }}'>{{category.name}}</a></td>
             <td>
                 <div class="d-flex gap-1">
-                    <a class="btn btn-primary btn-sm" href='{{ path('admin.recipe.edit', {id: recipe.id}) }}'>Edit</a>
-                    <form action="{{ path('admin.recipe.delete', {id: recipe.id}) }}" method="post">
+                    <a class="btn btn-primary btn-sm" href='{{ path('admin.category.edit', {id: category.id}) }}'>Edit</a>
+                    <form action="{{ path('admin.category.delete', {id: category.id}) }}" method="post">
                         <input type="hidden" name="_method" value="DELETE">
                         <button type="submit" class="btn btn-warning btn-sm">Delete</button>
                     </form>

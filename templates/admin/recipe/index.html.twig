@@ -4,6 +4,19 @@
 
 {% block body %}
     <a class="btn btn-primary" href='{{ path('admin.recipe.create')}}'>Create recipe</a>
+
+    <form method="post" name="selectCategory" action="{{ path('admin.recipe.filter') }}">
+        <label for="category">Choose a category: </label>
+        <select name="category" id="category">
+        <option value='all' {% if slug is defined and slug == 'all' %}selected{% endif %}>All</option>
+            {% for category in categories %}
+            <option value={{ category.slug }} {% if slug is defined and slug == category.slug %}selected{% endif %}>{{ category.name }}</option>
+            {% endfor %}
+        </select>
+        <button class="btn btn-primary" type="submit" value="send">Send</button> 
+    </form>
+
+    {% if recipes is defined %}
     <table class="table">
         <thead>
         <tr>
@@ -28,4 +41,5 @@
         </tbody>
         {% endfor %}
     </table>
+    {% endif %}
 {% endblock %}

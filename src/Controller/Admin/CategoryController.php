@@ -2,42 +2,66 @@
 
 namespace App\Controller\Admin;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Entity\Category;
+use App\Repository\RecipeRepository;
+use App\Repository\CategoryRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use App\Repository\CategoryRepository;
-use App\Repository\RecipeRepository;
+use Symfony\Component\Routing\Requirement\Requirement;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 #[Route('/admin/category', name: 'admin.category.')]
 class CategoryController extends AbstractController
 {
     #[Route('/', name: 'index')]
-    public function index(CategoryRepository $categoryRepository): Response
+    public function index(CategoryRepository $repository): Response
     {
-        $categories = $categoryRepository->findAll();
-        return $this->render('admin/category/category.html.twig', [
-            'categories'=> $categories
+        return $this->render('admin/category/category.html.twig',[
+            'categories'=> $repository->findAll(),
         ]);
     }
 
-    #[Route('/filter', name: 'filter')]
-    public function filter(Request $request): Response
+    #[Route('/create', name: 'create')]
+    public function create(Request $request, EntityManagerInterface $em): Response
     {
-        $slug = $request->request->get('category');
-        return $this->redirectToRoute('admin.category.filtered', ['slug' => $slug]);
+        $category = new Category();
+        $form = $this->createForm(CategoryType::class, $category);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em->persist($category);
+            $em->flush();
+            $this->addFlash('success','Category created');
+            return $this->redirectToRoute('admin.category.index');
+        }
+        return $this->render('admin/category/create.html.twig', [
+            'form' => $form
+        ]);
     }
 
-    #[Route('/{slug}', name: 'filtered', requirements: ['slug' => '[a-z0-9-]+'])]
-    public function sort(string $slug, Request $request, RecipeRepository $recipeRepository, CategoryRepository $categoryRepository): Response
+    #[Route('/{id}', name: 'edit', requirements: ['id'=> Requirement::DIGITS], methods: ['GET','POST'])]
+    public function edit(Category $category, Request $request, EntityManagerInterface $em): Response
     {
-        $categories = $categoryRepository->findAll();
-
-        $recipes = $recipeRepository->findByCategory($slug);
-        return $this->render('admin/category/category.html.twig', [
-            'categories'=> $categories,
-            'recipes'=> $recipes,
-            'slug'=> $slug
+        $form = $this->createForm(CategoryType::class, $category);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em->flush();
+            $this->addFlash('success','Category edited');
+            return $this->redirectToRoute('admin.category.index');
+        }
+        return $this->render('admin/category/edit.html.twig', [
+            'category' => $category,
+            'form' => $form
         ]);
+    }
+
+    #[Route('/{id}', name: 'delete', requirements: ['id'=> Requirement::DIGITS], methods: ['DELETE'])]
+    public function delete(Category $category, EntityManagerInterface $em): Response
+    {
+        $em->remove($category);
+        $em->flush();
+        $this->addFlash('success','Category deleted');
+        return $this->redirectToRoute('admin.category.index');
     }
 }

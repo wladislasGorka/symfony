@@ -2,26 +2,27 @@
 
 namespace App\Controller\Admin;
 
-use App\Repository\RecipeRepository;
 use App\Entity\Recipe;
 use App\Form\RecipeType;
+use App\Repository\RecipeRepository;
+use App\Repository\CategoryRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Requirement\Requirement;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 #[Route('/admin/recipes', name: 'admin.recipe.')]
 class RecipeController extends AbstractController
 {
     #[Route('/', name: 'index')]
-    public function index(RecipeRepository $repository): Response
+    public function index(RecipeRepository $recipeRepository, CategoryRepository $categoryRepository): Response
     {
         //dd($request->attributes->get('slug'), $request->attributes->get('id'));
         //return new Response('Recipes');
-        $recipes = $repository->findAll();
+        //$recipes = $repository->findAll();
         //$recipes = $em->getRepository(Recipe::class)->findWithDurationLowerThan(20);
 
         // Update recipe
@@ -45,7 +46,30 @@ class RecipeController extends AbstractController
         // $recipes = $repository->findWithDurationLowerThan(20);
 
         return $this->render('admin/recipe/index.html.twig', [
-            'recipes'=> $recipes
+            'categories'=> $categoryRepository->findAll(),
+            'recipes' => $recipeRepository->findAll()
+        ]);
+    }
+
+    #[Route('/filter', name: 'filter')]
+    public function filter(Request $request): Response
+    {
+        $slug = $request->request->get('category');
+        return $this->redirectToRoute('admin.recipe.filtered', ['slug' => $slug]);
+    }
+
+    #[Route('/{slug}', name: 'filtered', requirements: ['slug' => '[a-z0-9-]+'])]
+    public function sort(string $slug, Request $request, RecipeRepository $recipeRepository, CategoryRepository $categoryRepository): Response
+    {
+        if($slug == 'all') {
+            $recipes = $recipeRepository->findAll();
+        }else{
+            $recipes = $recipeRepository->findByCategory($slug);
+        }
+        return $this->render('admin/recipe/index.html.twig', [
+            'categories'=> $categoryRepository->findAll(),
+            'recipes'=> $recipes,
+            'slug'=> $slug
         ]);
     }
 

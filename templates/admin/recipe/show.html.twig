@@ -1,10 +1,12 @@
-{% extends "base.html.twig" %}
+{% extends "admin/admin.html.twig" %}
 
 {% block title "Recipe : " ~ recipe.title %}
 
 {% block body %}
     <h1>{{ recipe.title }}</h1>
 
-    {{ form(form) }}
+    <p>
+        {{ recipe.content | nl2br}}
+    </p>
     
 {% endblock %}

@@ -1,9 +1,10 @@
-{% extends "admin/admin.html.twig" %}
+{% extends 'admin/admin.html.twig' %}
 
-{% block title "All recipes" %}
+{% block title "Category" %}
 
 {% block body %}
-    <a class="btn btn-primary" href='{{ path('admin.recipe.create')}}'>Create recipe</a>
+    <h1>By category</h1>
+    {% if recipes is defined %}
     <table class="table">
         <thead>
         <tr>
@@ -28,4 +29,5 @@
         </tbody>
         {% endfor %}
     </table>
+    {% endif %}
 {% endblock %}

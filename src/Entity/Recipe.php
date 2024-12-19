@@ -45,6 +45,10 @@ class Recipe
     #[Assert\LessThan(value: 1440)]
     private ?int $duration = null;
 
+    #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
+    private string $categorySlug = '';
+
     public function getId(): ?int
     {
         return $this->id;
@@ -118,6 +122,18 @@ class Recipe
     public function setDuration(?int $duration): static
     {
         $this->duration = $duration;
+
+        return $this;
+    }
+
+    public function getCategorySlug(): string
+    {
+        return $this->categorySlug;
+    }
+
+    public function setCategorySlug(string $categorySlug): static
+    {
+        $this->categorySlug = $categorySlug;
 
         return $this;
     }

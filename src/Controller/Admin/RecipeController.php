@@ -80,7 +80,7 @@ class RecipeController extends AbstractController
         if( $form->isSubmitted() && $form->isValid() ){
             $em->persist($recipe);
             $em->flush();
-            $this->addFlash('success','Creation success.');
+            $this->addFlash('success',"Success create: {$recipe->getTitle()}");
             return $this->redirectToRoute('admin.recipe.index');
         }
         return $this->render('admin/recipe/create.html.twig', [
@@ -94,7 +94,7 @@ class RecipeController extends AbstractController
         $form->handleRequest($request);
         if( $form->isSubmitted() && $form->isValid() ){
             $em->flush();
-            $this->addFlash('success','Modif success.');
+            $this->addFlash('success',"Success edit: {$recipe->getTitle()}");
             return $this->redirectToRoute('admin.recipe.index');
         }
         return $this->render('admin/recipe/edit.html.twig', [
@@ -107,7 +107,7 @@ class RecipeController extends AbstractController
     public function deleteRecipe(Recipe $recipe, EntityManagerInterface $em){
         $em->remove($recipe);
         $em->flush();
-        $this->addFlash('success','Delete success.');
+        $this->addFlash('success',"Success delete: {$recipe->getTitle()}");
         return $this->redirectToRoute('admin.recipe.index');
     }
 

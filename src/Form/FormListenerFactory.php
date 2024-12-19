@@ -1,10 +1,11 @@
 <?php
 
+namespace App\Form;
+
 use Symfony\Component\Form\Event\PreSubmitEvent;
 use Symfony\Component\Form\Event\PostSubmitEvent;
 use Symfony\Component\String\Slugger\AsciiSlugger;
 
-App\Form;
 
 class FormListenerFactory{
 
@@ -12,7 +13,7 @@ class FormListenerFactory{
     {
         return function(PreSubmitEvent $event) use ($field)
         {
-            $data->$event->getData();
+            $data = $event->getData();
             if(empty($data["slug"])){
                 $slugger = new AsciiSlugger();
                 $data["slug"] = strtolower($slugger->slug($data[$field]));
@@ -25,7 +26,7 @@ class FormListenerFactory{
     {
         return function(PostSubmitEvent $event) {
             $data = $event->getData();
-            $data->setUpdateAt(new \DateTimeImmutable());
+            $data->setUpdatedAt(new \DateTimeImmutable());
             if(!$data->getId()){
                 $data->setCreatedAt(new \DateTimeImmutable());
             }

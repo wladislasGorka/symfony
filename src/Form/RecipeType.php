@@ -3,7 +3,7 @@
 namespace App\Form;
 
 use App\Entity\Recipe;
-use FormListenerFactory;
+use App\Form\FormListenerFactory;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\AbstractType;

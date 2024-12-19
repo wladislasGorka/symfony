@@ -33,7 +33,7 @@ class CategoryController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $em->persist($category);
             $em->flush();
-            $this->addFlash('success','Category created');
+            $this->addFlash('success',"Category {$category->getName()} created");
             return $this->redirectToRoute('admin.category.index');
         }
         return $this->render('admin/category/create.html.twig', [
@@ -48,7 +48,7 @@ class CategoryController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $em->flush();
-            $this->addFlash('success','Category edited');
+            $this->addFlash('success',"Category {$category->getName()} edited");
             return $this->redirectToRoute('admin.category.index');
         }
         return $this->render('admin/category/edit.html.twig', [
@@ -62,7 +62,7 @@ class CategoryController extends AbstractController
     {
         $em->remove($category);
         $em->flush();
-        $this->addFlash('success','Category deleted');
+        $this->addFlash('success',"Category {$category->getName()} deleted");
         return $this->redirectToRoute('admin.category.index');
     }
 }

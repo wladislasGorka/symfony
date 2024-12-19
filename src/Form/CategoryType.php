@@ -3,8 +3,9 @@
 namespace App\Form;
 
 use App\Entity\Category;
-use FormListenerFactory;
+use App\Form\FormListenerFactory;
 use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\String\Slugger\AsciiSlugger;
@@ -29,7 +30,7 @@ class CategoryType extends AbstractType
             ->add('slug', TextType::class, [
                 'required' => false,
                 'constraints' => new Sequentially([
-                    new Length(min: 10), 
+                    new Length(min: 5), 
                     new Regex('/^[a-z0-9]+(?:-[a-z0-9]+)*$/')
                 ])
             ])
@@ -37,6 +38,7 @@ class CategoryType extends AbstractType
                 'label'=> 'Send'
             ])
             ->addEventListener(FormEvents::PRE_SUBMIT, $this->factory->autoSlug('name'))
+            ->addEventListener(FormEvents::POST_SUBMIT, $this->factory->timeStamps())
         ;
     }
 

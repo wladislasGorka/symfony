@@ -13,17 +13,31 @@ use App\Repository\RecipeRepository;
 class CategoryController extends AbstractController
 {
     #[Route('/', name: 'index')]
-    public function index(): Response
+    public function index(CategoryRepository $categoryRepository): Response
     {
-        return $this->render('admin/category/category.html.twig');
+        $categories = $categoryRepository->findAll();
+        return $this->render('admin/category/category.html.twig', [
+            'categories'=> $categories
+        ]);
     }
 
-    #[Route('/{slug}', name: 'sort', requirements: ['slug' => '[a-z0-9-]+'])]
-    public function sort(string $slug, Request $request, RecipeRepository $recipeRepository): Response
+    #[Route('/filter', name: 'filter')]
+    public function filter(Request $request): Response
     {
+        $slug = $request->request->get('category');
+        return $this->redirectToRoute('admin.category.filtered', ['slug' => $slug]);
+    }
+
+    #[Route('/{slug}', name: 'filtered', requirements: ['slug' => '[a-z0-9-]+'])]
+    public function sort(string $slug, Request $request, RecipeRepository $recipeRepository, CategoryRepository $categoryRepository): Response
+    {
+        $categories = $categoryRepository->findAll();
+
         $recipes = $recipeRepository->findByCategory($slug);
         return $this->render('admin/category/category.html.twig', [
-            'recipes'=> $recipes
+            'categories'=> $categories,
+            'recipes'=> $recipes,
+            'slug'=> $slug
         ]);
     }
 }

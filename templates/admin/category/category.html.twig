@@ -4,6 +4,17 @@
 
 {% block body %}
     <h1>By category</h1>
+
+    <form method="post" name="selectCategory" action="{{ path('admin.category.filter') }}">
+        <label for="category">Choose a category: </label>
+        <select name="category" id="category">
+            {% for category in categories %}
+            <option value={{ category.slug }} {% if slug is defined and slug == category.slug %}selected{% endif %}>{{ category.name }}</option>
+            {% endfor %}
+        </select>
+        <button class="btn btn-primary" type="submit" value="send">Send</button> 
+    </form>
+
     {% if recipes is defined %}
     <table class="table">
         <thead>

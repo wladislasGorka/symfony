@@ -1,7 +1,36 @@
-{% extends 'base.html.twig' %}
+{% extends "base.html.twig" %}
 
-{% block title %}Hello HomeController!{% endblock %}
+{% block title "Recipes" %}
 
 {% block body %}
-Home
+
+    <form method="post" name="selectCategory" action="{{ path('filter') }}">
+        <label for="category">Choose a category: </label>
+        <select name="category" id="category">
+        <option value='all' {% if slug is defined and slug == 'all' %}selected{% endif %}>All</option>
+            {% for category in categories %}
+            <option value={{ category.slug }} {% if slug is defined and slug == category.slug %}selected{% endif %}>{{ category.name }}</option>
+            {% endfor %}
+        </select>
+        <button class="btn btn-primary" type="submit" value="send">Send</button> 
+    </form>
+
+    {% if recipes is defined %}
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Title</th>
+            <th>Duration</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for recipe in recipes %}
+        <tr>
+            <td>{{recipe.title}}</td>
+            <td>{{recipe.duration}}</td>
+        </tr>
+        </tbody>
+        {% endfor %}
+    </table>
+    {% endif %}
 {% endblock %}

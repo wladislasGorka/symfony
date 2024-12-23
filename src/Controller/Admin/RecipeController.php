@@ -14,13 +14,16 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Requirement\Requirement;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/admin/recipes', name: 'admin.recipe.')]
+#[IsGranted('ROLE_USER')]
 class RecipeController extends AbstractController
 {
     #[Route('/', name: 'index')]
     public function index(RecipeRepository $recipeRepository, CategoryRepository $categoryRepository): Response
     {
+        //$this->denyAccessUnlessGranted('ROLE_USER');
         return $this->render('admin/recipe/index.html.twig', [
             'categories'=> $categoryRepository->findAll(),
             'recipes' => $recipeRepository->findAll()
@@ -90,7 +93,11 @@ class RecipeController extends AbstractController
     }
 
     #[Route('/{id}', name:'edit', methods: ['GET','POST'], requirements: ['id'=>Requirement::DIGITS])]
-    public function edit(Recipe $recipe, Request $request, EntityManagerInterface $em){
+    public function edit(Recipe $recipe = null, Request $request, EntityManagerInterface $em){
+        if (!$recipe) {
+            return $this->redirectToRoute('admin.recipe.index');
+        }
+
         $form = $this->createForm(RecipeType::class, $recipe);
         $form->handleRequest($request);
         if( $form->isSubmitted() && $form->isValid() ){
@@ -128,6 +135,9 @@ class RecipeController extends AbstractController
     public function sort(string $slug, Request $request, RecipeRepository $recipeRepository, CategoryRepository $categoryRepository): Response
     {
         $category = $categoryRepository->findOneBy(['slug'=> $slug]);
+        if($category == null){
+            return $this->redirectToRoute('admin.recipe.index');
+        }
         if($slug == 'all') {
             $recipes = $recipeRepository->findAll();
         }else{

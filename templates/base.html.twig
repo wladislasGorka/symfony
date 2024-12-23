@@ -24,7 +24,6 @@
             <div class="navbar-nav">
                 <a class="nav-link {{ app.current_route == 'home' ? 'active' : '' }} " href="{{ path('home') }}">Home</a>
                 <a class="nav-link {{ app.current_route starts with 'contact.' ? 'active' : '' }} " href="{{ path('contact.index') }}">Contact</a>
-                <a class="nav-link {{ app.current_route starts with 'register.' ? 'active' : '' }} " href="{{ path('register.index') }}">Register</a>
             </div>
         </div>
     </div>

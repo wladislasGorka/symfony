@@ -4,33 +4,50 @@
 
 {% block body %}
 
-    <form method="post" name="selectCategory" action="{{ path('filter') }}">
-        <label for="category">Choose a category: </label>
-        <select name="category" id="category">
-        <option value='all' {% if slug is defined and slug == 'all' %}selected{% endif %}>All</option>
-            {% for category in categories %}
-            <option value={{ category.slug }} {% if slug is defined and slug == category.slug %}selected{% endif %}>{{ category.name }}</option>
-            {% endfor %}
-        </select>
-        <button class="btn btn-primary" type="submit" value="send">Send</button> 
-    </form>
+    <div class="mb-4">
+        <form method="post" name="selectCategory" action="{{ path('filter') }}">
+            <label for="category">Choose a category: </label>
+            <select name="category" id="category">
+            <option value='all' {% if slug is defined and slug == 'all' %}selected{% endif %}>All</option>
+                {% for category in categories %}
+                <option value={{ category.slug }} {% if slug is defined and slug == category.slug %}selected{% endif %}>{{ category.name }}</option>
+                {% endfor %}
+            </select>
+            <button class="btn btn-primary" type="submit" value="send">Send</button> 
+        </form>
+    </div>
 
-    {% if recipes is defined %}
-    <table class="table">
-        <thead>
-        <tr>
-            <th>Title</th>
-            <th>Duration</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for recipe in recipes %}
-        <tr>
-            <td>{{recipe.title}}</td>
-            <td>{{recipe.duration}}</td>
-        </tr>
-        </tbody>
-        {% endfor %}
-    </table>
-    {% endif %}
+    <style>
+        .card {
+            transition: transform 0.3s, box-shadow 0.3s;
+            height: 100%;
+        }
+        .card-body {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+
+    <div class="container">
+        <div class="row g-4">
+            {% for recipe in recipes %}
+            <div class="col-md-3 d-flex align-items-stretch">
+                <div class="card mb-4">
+                    <img src="/images/recipes/{{recipe.thumbnail}}" class="card-img-top" alt="{{recipe.title}}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{recipe.title}}</h5>
+                        <p class="card-text">{{recipe.content | slice(0,100) }}</p>
+                        <p class="card-text"><small class="text-muted">Duration: {{recipe.duration}}</small></p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
 {% endblock %}

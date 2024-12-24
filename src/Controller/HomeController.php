@@ -15,7 +15,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 class HomeController extends AbstractController
 {
     #[Route("/", name: "home")]
-    function index(Request $request, RecipeRepository $recipeRepository, CategoryRepository $categoryRepository): Response 
+    function index(Request $request,RecipeRepository $recipeRepository, CategoryRepository $categoryRepository): Response 
     {
         return $this->render('home/index.html.twig', [
             'categories'=> $categoryRepository->findAll(),

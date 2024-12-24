@@ -24,6 +24,12 @@
             <div class="navbar-nav">
                 <a class="nav-link {{ app.current_route == 'home' ? 'active' : '' }} " href="{{ path('home') }}">Home</a>
                 <a class="nav-link {{ app.current_route starts with 'contact.' ? 'active' : '' }} " href="{{ path('contact.index') }}">Contact</a>
+                {% if app.user == null %}
+                <a class="nav-link {{ app.current_route == 'app_register' ? 'active' : '' }} " href="{{ path('app_register') }}">Register</a>
+                <a class="nav-link {{ app.current_route == 'app_login' ? 'active' : '' }} " href="{{ path('app_login') }}">Login</a>
+                {% else %}
+                <a class="nav-link {{ app.current_route == 'app_logout' ? 'active' : '' }} " href="{{ path('app_logout') }}">Logout</a>
+                {% endif %}
             </div>
         </div>
     </div>

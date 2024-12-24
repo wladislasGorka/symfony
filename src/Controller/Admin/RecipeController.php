@@ -21,13 +21,19 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class RecipeController extends AbstractController
 {
     #[Route('/', name: 'index')]
-    public function index(RecipeRepository $recipeRepository, CategoryRepository $categoryRepository): Response
+    public function index(Request $request, RecipeRepository $recipeRepository, CategoryRepository $categoryRepository): Response
     {
-        //$this->denyAccessUnlessGranted('ROLE_USER');
+        $page = $request->query->getInt('page',1);
+        $recipes = $recipeRepository->paginateRecipes($page);
         return $this->render('admin/recipe/index.html.twig', [
-            'categories'=> $categoryRepository->findAll(),
-            'recipes' => $recipeRepository->findAll()
+            'recipes'=> $recipes
         ]);
+        //$this->denyAccessUnlessGranted('ROLE_USER');
+
+        // return $this->render('admin/recipe/index.html.twig', [
+        //     'categories'=> $categoryRepository->findAll(),
+        //     'recipes' => $recipeRepository->findAll()
+        // ]);
 
         //dd($request->attributes->get('slug'), $request->attributes->get('id'));
         //return new Response('Recipes');

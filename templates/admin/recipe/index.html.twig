@@ -3,9 +3,9 @@
 {% block title "All recipes" %}
 
 {% block body %}
-    <a class="btn btn-primary" href='{{ path('admin.recipe.create')}}'>Create recipe</a>
+    <a class="btn btn-primary mb-4" href='{{ path('admin.recipe.create')}}'>Create recipe</a>
 
-    <form method="post" name="selectCategory" action="{{ path('admin.recipe.filter') }}">
+    {# <form method="post" name="selectCategory" action="{{ path('admin.recipe.filter') }}">
         <label for="category">Choose a category: </label>
         <select name="category" id="category">
         <option value='all' {% if slug is defined and slug == 'all' %}selected{% endif %}>All</option>
@@ -14,13 +14,16 @@
             {% endfor %}
         </select>
         <button class="btn btn-primary" type="submit" value="send">Send</button> 
-    </form>
+    </form> #}
 
     {% if recipes is defined %}
     <table class="table">
         <thead>
         <tr>
-            <th>Title</th>
+            <th>{{ knp_pagination_sortable(recipes,'Title','r.title') }}</th>
+            <th>{{ knp_pagination_sortable(recipes,'Date','r.createdAt') }}</th>
+            <th>{{ knp_pagination_sortable(recipes,'Duration','r.duration') }}</th>
+            <th>{{ knp_pagination_sortable(recipes,'Category','c.name') }}</th>
             <th style="width: 100px">Actions</th>
         </tr>
         </thead>
@@ -28,6 +31,9 @@
         {% for recipe in recipes %}
         <tr>
             <td><a href='{{ path('admin.recipe.edit', {id: recipe.id, slug: recipe.slug}) }}'>{{recipe.title}}</a></td>
+            <td><a href='{{ path('admin.recipe.edit', {id: recipe.id, slug: recipe.slug}) }}'>{{recipe.createdAt|format_datetime('short', 'none', locale='fr')}}</a></td>
+            <td><a href='{{ path('admin.recipe.edit', {id: recipe.id, slug: recipe.slug}) }}'>{{recipe.duration}}</a></td>
+            <td><a href='{{ path('admin.recipe.edit', {id: recipe.id, slug: recipe.slug}) }}'>{{recipe.category.name}}</a></td>
             <td>
                 <div class="d-flex gap-1">
                     <a class="btn btn-primary btn-sm" href='{{ path('admin.recipe.edit', {id: recipe.id}) }}'>Edit</a>
@@ -42,4 +48,6 @@
         {% endfor %}
     </table>
     {% endif %}
+
+    {{ knp_pagination_render(recipes) }}
 {% endblock %}

@@ -6,13 +6,13 @@
     <a class="btn btn-primary mb-4" href='{{ path('admin.recipe.create')}}'>Create recipe</a>
 
     <form method="get" name="selectCategory" action="{{ path('admin.recipe.index') }}">
-        {# <label for="category">Choose a category: </label>
+        <label for="category">Choose a category: </label>
         <select name="category" id="category">
         <option value='all' {% if slug is defined and slug == 'all' %}selected{% endif %}>All</option>
             {% for category in categories %}
             <option value={{ category.slug }} {% if slug is defined and slug == category.slug %}selected{% endif %}>{{ category.name }}</option>
             {% endfor %}
-        </select> #}
+        </select>
         <label for="durationMin">Min duration: </label>
         <input type="number" name="durationMin" id="durationMin" value="{{ app.request.get('durationMin') }}">
         <label for="durationMax">Max duration: </label>

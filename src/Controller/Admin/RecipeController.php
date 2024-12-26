@@ -48,21 +48,10 @@ class RecipeController extends AbstractController
         $page = $request->query->getInt('page',1);
         $recipes = $recipeRepository->paginateRecipes($queryBuilder, $page);
         return $this->render('admin/recipe/index.html.twig', [
+            'categories'=> $categoryRepository->findAll(),
             'recipes'=> $recipes
         ]);
-
-        //$this->denyAccessUnlessGranted('ROLE_USER');
-
-        // return $this->render('admin/recipe/index.html.twig', [
-        //     'categories'=> $categoryRepository->findAll(),
-        //     'recipes' => $recipeRepository->findAll()
-        // ]);
-
-        //dd($request->attributes->get('slug'), $request->attributes->get('id'));
-        //return new Response('Recipes');
-        //$recipes = $repository->findAll();
-        //$recipes = $em->getRepository(Recipe::class)->findWithDurationLowerThan(20);
-
+        
         // Update recipe
         // $recipes[0]->setTitle('Pâtes sauce tomate');
         // $em->flush();

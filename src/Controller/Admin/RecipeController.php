@@ -23,11 +23,34 @@ class RecipeController extends AbstractController
     #[Route('/', name: 'index')]
     public function index(Request $request, RecipeRepository $recipeRepository, CategoryRepository $categoryRepository): Response
     {
+        
+        $category = $request->get('category');
+        $durationMin = $request->get('durationMin');
+        $durationMax = $request->get('durationMax');
+
+        $queryBuilder = $recipeRepository->createQueryBuilder('r')
+            ->leftJoin('r.category', 'c')
+            ->select('r', 'c');
+
+        if ($category && $category !== 'all') {
+            $queryBuilder->andWhere('c.slug = :category')
+                ->setParameter('category', $category);
+        }
+        if ($durationMin) {
+            $queryBuilder->andWhere('r.duration >= :durationMin')
+                ->setParameter('durationMin', $durationMin);
+        }
+        if ($durationMax) {
+            $queryBuilder->andWhere('r.duration <= :durationMax')
+                ->setParameter('durationMax', $durationMax);
+        }
+
         $page = $request->query->getInt('page',1);
-        $recipes = $recipeRepository->paginateRecipes($page);
+        $recipes = $recipeRepository->paginateRecipes($queryBuilder, $page);
         return $this->render('admin/recipe/index.html.twig', [
             'recipes'=> $recipes
         ]);
+
         //$this->denyAccessUnlessGranted('ROLE_USER');
 
         // return $this->render('admin/recipe/index.html.twig', [

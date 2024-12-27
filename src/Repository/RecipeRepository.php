@@ -19,7 +19,20 @@ class RecipeRepository extends ServiceEntityRepository
         parent::__construct($registry, Recipe::class);
     }
 
-    public function paginateRecipes(QueryBuilder $query, int $page): PaginationInterface
+    public function paginateRecipes(int $page): PaginationInterface
+    {
+        return $this->paginator->paginate(
+            $this->createQueryBuilder('r'),
+            $page,
+            3,
+            [
+                'distinct' => false,
+                'sortFiledAllowList' => ['r.title','r.createdAt','r.duration']
+            ]
+        );
+    }
+
+    public function paginateRecipesCustomQuery(QueryBuilder $query, int $page): PaginationInterface
     {
         return $this->paginator->paginate(
             $query->getQuery(),

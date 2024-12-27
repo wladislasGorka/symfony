@@ -46,7 +46,7 @@ class RecipeController extends AbstractController
         }
 
         $page = $request->query->getInt('page',1);
-        $recipes = $recipeRepository->paginateRecipes($queryBuilder, $page);
+        $recipes = $recipeRepository->paginateRecipesCustomQuery($queryBuilder, $page);
         return $this->render('admin/recipe/index.html.twig', [
             'categories'=> $categoryRepository->findAll(),
             'recipes'=> $recipes

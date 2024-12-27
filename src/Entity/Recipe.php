@@ -55,6 +55,7 @@ class Recipe
     private ?int $duration = null;
 
     #[ORM\ManyToOne(inversedBy: 'recipes')]
+    #[Groups(['recipes.show'])]
     private ?Category $category = null;
 
     #[ORM\Column(length: 255, nullable: true)]

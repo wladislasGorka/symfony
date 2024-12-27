@@ -39,7 +39,9 @@ class RecipeType extends AbstractType
                     new Regex('/^[a-z0-9]+(?:-[a-z0-9]+)*$/')
                 ])
             ])
-            ->add('thumbnailFile', FileType::class)
+            ->add('thumbnailFile', FileType::class, [
+                'required' => false
+            ])
             ->add('category', EntityType::class, [
                 'class'=> Category::class,
                 'choice_label'=> 'name'
